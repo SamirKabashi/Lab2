@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { Button, Container, Menu, Image, Dropdown } from 'semantic-ui-react';
+import { Button, Container, Menu, Image, Dropdown, Search } from 'semantic-ui-react';
 import { useStore } from '../stores/store';
 
 export default observer(function NavBar() {
@@ -18,6 +18,9 @@ export default observer(function NavBar() {
                 <Menu.Item as={NavLink} to='/activities' name='Activities' />
                 <Menu.Item>
                     <Button as={NavLink} to='/createActivity' positive content='Create Activity' />
+                </Menu.Item>
+                <Menu.Item position='right'>
+                    <Search placeholder='Search for everything' as={NavLink} to='/activities'  />
                 </Menu.Item>
                 <Menu.Item position='right'>
                     <Image src={user?.image || '/assets/user.png'} avatar spaced='right' />
