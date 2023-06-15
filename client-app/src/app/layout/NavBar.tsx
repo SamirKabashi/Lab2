@@ -20,7 +20,7 @@ export default observer(function NavBar() {
                     <Button as={NavLink} to='/createActivity' positive content='Create Activity' />
                 </Menu.Item>
                 <Menu.Item position='right'>
-                    <Search placeholder='Search for everything' as={NavLink} to='/activities'  />
+                    <Search placeholder='Search for everything' as={NavLink} to='/searchButton'  />
                 </Menu.Item>
                 <Menu.Item position='right'>
                     <Image src={user?.image || '/assets/user.png'} avatar spaced='right' />
