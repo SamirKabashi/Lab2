@@ -1,39 +1,45 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using Domain;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Persistence;
 
 namespace API.Controllers
 {
-    [Route("api/search")]
+    [Route("api/[controller]")]
     [ApiController]
     public class SearchController : ControllerBase
     {
-        [HttpPost]
-        public ActionResult<object> Search([FromBody] SearchRequest request)
+        private readonly DataContext _context;
+        private readonly ILogger<SearchController> _logger;
+
+        public SearchController(DataContext context, ILogger<SearchController> logger)
         {
-            // Get the search query from the request
-            string query = request.Query;
-
-            // Perform the search operation
-            // Replace this with your actual search implementation
-            var results = PerformSearch(query);
-
-            // Return the search results as a response
-            return new { Results = results };
+            _context = context;
+            _logger = logger;
         }
 
-        private object PerformSearch(string query)
+        [HttpGet]
+        public async Task<ActionResult<object>> Search([FromQuery] string query)
         {
-            // Replace this with your actual search implementation
-            // This is just a placeholder
-            return new[] { "Result 1", "Result 2", "Result 3" };
-        }
-    }
+            _logger.LogInformation($"Search query: {query}");
 
-    public class SearchRequest
-    {
-        public string Query { get; set; }
+            var lowerCaseQuery = query.ToLower();
+
+            var eventResults = await _context.Activities
+                .Where(e => e.Title.ToLower().Contains(lowerCaseQuery) ||
+                            e.Description.ToLower().Contains(lowerCaseQuery) ||
+                            e.Category.ToLower().Contains(lowerCaseQuery) ||
+                            e.City.ToLower().Contains(lowerCaseQuery) ||
+                            e.Venue.ToLower().Contains(lowerCaseQuery))
+                .ToListAsync();
+
+            var userResults = await _context.Users
+                .Where(u => u.DisplayName.ToLower().Contains(lowerCaseQuery) ||
+                            u.UserName.ToLower().Contains(lowerCaseQuery))
+                .ToListAsync();
+
+            return Ok(new { eventResults, userResults });
+        }
     }
 }

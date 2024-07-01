@@ -6,6 +6,7 @@ import { PaginatedResult } from '../models/pagination';
 import { Photo, Profile, UserActivity } from '../models/profile';
 import { User, UserFormValues } from '../models/user';
 import { store } from '../stores/store';
+import { SearchResults } from '../models/search'; // Import the SearchResults interface
 
 const sleep = (delay: number) => {
     return new Promise((resolve) => {
@@ -116,10 +117,15 @@ const Profiles = {
         requests.get<UserActivity[]>(`/profiles/${username}/activities?predicate=${predicate}`)
 }
 
+const Search = {
+    search: (query: string) => requests.get<SearchResults>(`/search?query=${query}`)
+};
+
 const agent = {
     Activities,
     Account,
-    Profiles
+    Profiles,
+    Search // Add Search here
 }
 
 export default agent;
